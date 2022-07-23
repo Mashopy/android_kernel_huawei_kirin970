@@ -325,6 +325,7 @@ config PM_FAIL_DEBUG
 
 config HUAWEI_SLEEPLOG
 	bool "huawei sleeplogcat"
+	depends on DEBUG_FS
 	default n
 	help
 	  Record suspend_stats info
