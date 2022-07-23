@@ -43,6 +43,7 @@
 	} while (0)
 
 
+#ifdef CONFIG_F2FS_STAT_FS
 /* print the f2fs superblock infomation to the kernel message,
  * it will be saved by DMD or panic log
  * simplified info of f2fs tool: fsck.f2fs
@@ -223,6 +224,7 @@ void f2fs_print_sbi_info(struct f2fs_sb_info *sbi)
 
 	f2fs_msg(sbi->sb, KERN_ALERT, "\n\n");
 }
+#endif
 
 /* Display on console for little endian disk data*/
 #define DISP_LE_u16(ptr, member)						\

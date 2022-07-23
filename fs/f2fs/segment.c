@@ -590,12 +590,16 @@ bool need_balance_dirty_type(struct f2fs_sb_info *sbi)
 	long diff_node_blocks = 0, diff_data_blocks = 0;
 	struct timespec ts = {DEF_DIRTY_STAT_INTERVAL, 0};
 	unsigned long interval = timespec_to_jiffies(&ts);
+#ifdef CONFIG_F2FS_STAT_FS
 	struct f2fs_bigdata_info *bd = F2FS_BD_STAT(sbi);
+#endif
 	unsigned long last_jiffies;
 
+#ifdef CONFIG_F2FS_STAT_FS
 	bd_mutex_lock(&sbi->bd_mutex);
 	last_jiffies = bd->ssr_last_jiffies;
 	bd_mutex_unlock(&sbi->bd_mutex);
+#endif
 
 	if (!time_after(jiffies, last_jiffies + interval))
 		return false;
@@ -606,6 +610,7 @@ bool need_balance_dirty_type(struct f2fs_sb_info *sbi)
 		dirty_node += dirty_i->nr_dirty[i];
 	all_dirties = dirty_data+dirty_node;
 
+#ifdef CONFIG_F2FS_STAT_FS
 	/* how many blocks are consumed during this interval */
 	bd_mutex_lock(&sbi->bd_mutex);
 
@@ -617,6 +622,7 @@ bool need_balance_dirty_type(struct f2fs_sb_info *sbi)
 	bd->ssr_last_jiffies = jiffies;
 
 	bd_mutex_unlock(&sbi->bd_mutex);
+#endif
 
 	if (!all_dirties)
 		return false;
@@ -4045,6 +4051,7 @@ int  f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
 		f2fs_bug_on(sbi, IS_NODESEG(se->type));
 	}
 
+#ifdef CONFIG_F2FS_STAT_FS
 	if (is_gc_test_set(sbi, GC_TEST_ENABLE_GC_STAT)) {
 		if (from_gc || page == NULL || (page && is_cold_data(page))) {
 			if (curseg->alloc_type == SSR)
@@ -4060,6 +4067,7 @@ int  f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
 			set_page_private(page, 0);
 		}
 	}
+#endif
 
 	*new_blkaddr = NEXT_FREE_BLKADDR(sbi, curseg);
 	f2fs_bug_on(sbi, curseg->next_blkoff >= sbi->blocks_per_seg);
@@ -4095,6 +4103,7 @@ int  f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
 						CURSEG_I(sbi, type)->segno); //lint !e666
 				se = get_seg_entry(sbi, curseg->next_segno);
 				change_curseg(sbi, curseg, se->type, true);
+#ifdef CONFIG_F2FS_STAT_FS
 				if (is_gc_test_set(sbi, GC_TEST_ENABLE_GC_STAT))
 					stat_inc_assr_ssr_segs(sbi);
 			} else {
@@ -4102,6 +4111,7 @@ int  f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
 								se->type, false);
 				if (is_gc_test_set(sbi, GC_TEST_ENABLE_GC_STAT))
 					stat_inc_assr_lfs_segs(sbi);
+#endif
 			}
 			stat_inc_seg_type(sbi, curseg);
 		} else {
@@ -4716,8 +4726,10 @@ static void init_frag_curseg(struct f2fs_sb_info *sbi)
 
 		se = get_seg_entry(sbi, curseg->next_segno);
 		change_curseg(sbi, curseg, se->type, false);
+#ifdef CONFIG_F2FS_STAT_FS
 		if (is_gc_test_set(sbi, GC_TEST_ENABLE_GC_STAT))
 			stat_inc_assr_ssr_segs(sbi);
+#endif
 	} else {
 		unsigned int segno;
 
@@ -4726,8 +4738,10 @@ static void init_frag_curseg(struct f2fs_sb_info *sbi)
 		curseg->next_segno = segno;
 		reset_curseg(sbi, curseg, CURSEG_COLD_DATA, 1);
 		curseg->alloc_type = LFS;
+#ifdef CONFIG_F2FS_STAT_FS
 		if (is_gc_test_set(sbi, GC_TEST_ENABLE_GC_STAT))
 			stat_inc_assr_lfs_segs(sbi);
+#endif
 	}
 	stat_inc_seg_type(sbi, curseg);
 

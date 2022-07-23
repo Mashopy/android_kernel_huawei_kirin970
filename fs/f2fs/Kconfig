@@ -97,6 +97,7 @@ config F2FS_IO_TRACE
 
 config HUAWEI_F2FS_DSM
 	bool "Listen f2fs kernel err"
+	depends on F2FS_STAT_FS
 	default n
 	help
 		use huawei fs log radar
