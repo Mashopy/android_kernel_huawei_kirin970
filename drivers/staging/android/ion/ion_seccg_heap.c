@@ -46,7 +46,7 @@ static struct cma *hisi_cma;
 static struct ion_sec_cma hisi_seccg_cmas[SEC_CG_CMA_NUM];
 static unsigned int seccg_cma_num;
 
-int hisi_sec_cma_set_up(struct reserved_mem *rmem)
+int __init hisi_sec_cma_set_up(struct reserved_mem *rmem)
 {
 	phys_addr_t align = PAGE_SIZE << max(MAX_ORDER - 1, pageblock_order);
 	phys_addr_t mask = align - 1;

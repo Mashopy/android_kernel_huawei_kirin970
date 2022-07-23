@@ -50,7 +50,7 @@ struct pmalloc_data {
 
 static LIST_HEAD(pmalloc_final_list);
 static __initdata LIST_HEAD(pmalloc_tmp_list);
-static struct list_head *pmalloc_list = &pmalloc_tmp_list;
+static struct list_head __init* pmalloc_list = &pmalloc_tmp_list;
 static DEFINE_MUTEX(pmalloc_mutex);
 static struct kobject *pmalloc_kobject;
 
@@ -162,7 +162,7 @@ do { \
 	data->attr_##attr_name.show = pmalloc_pool_show_##attr_name; \
 } while (0)
 
-struct gen_pool *pmalloc_create_pool(const char *name, int min_alloc_order)
+struct gen_pool __init* pmalloc_create_pool(const char *name, int min_alloc_order)
 {
 	struct gen_pool *pool = NULL;
 	const char *pool_name = NULL;

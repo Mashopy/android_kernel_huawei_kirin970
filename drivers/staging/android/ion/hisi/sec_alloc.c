@@ -53,7 +53,7 @@ unsigned long get_svc_total_size(int id)
 	return (unsigned long)atomic_long_read(&svc_total_size[id]);
 }
 
-int hisi_sec_cma_reserve(struct reserved_mem *rmem)
+int __init hisi_sec_cma_reserve(struct reserved_mem *rmem)
 {
 	phys_addr_t align = PAGE_SIZE << max(MAX_ORDER - 1, pageblock_order);
 	phys_addr_t mask = align - 1;

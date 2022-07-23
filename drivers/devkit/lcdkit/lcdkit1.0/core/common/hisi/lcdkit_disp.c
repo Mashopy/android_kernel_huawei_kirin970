@@ -4110,7 +4110,7 @@ static struct of_device_id lcdkit_match_table[] =
 /*
 *panel platform driver
 */
-static struct platform_driver lcdkit_driver =
+static struct platform_driver lcdkit_driver __refdata =
 {
     .probe = lcdkit_probe,
     .remove = NULL,

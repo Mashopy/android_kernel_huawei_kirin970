@@ -152,7 +152,7 @@ ssize_t modem_reset_set(struct device *dev, struct device_attribute *attr, const
     state = simple_strtol(buf, &endp, 10); /*10 means read as dec*/
     pr_err("count = %lu\n", (unsigned long)count);
 
-    /* Õû»ú¸´Î»¶ÔrildÎª×®,Ó¦¸ÃÕû»ú¸´Î» */
+    /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½rildÎª×®,Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î» */
     if (!bsp_reset_is_connect_ril())
     {
         pr_err("<modem_reset_set>: modem reset not to be connected to ril\n");
@@ -176,7 +176,7 @@ ssize_t modem_reset_set(struct device *dev, struct device_attribute *attr, const
         return (ssize_t)count;
     }
 
-    if (state == BALONG_MODEM_RESET) /* ÇÐ¿¨ */
+    if (state == BALONG_MODEM_RESET) /* ï¿½Ð¿ï¿½ */
     {
         pr_err("modem reset %d\n", BALONG_MODEM_RESET);
         if(!is_in_llt())
@@ -201,7 +201,7 @@ ssize_t modem_reset_set(struct device *dev, struct device_attribute *attr, const
         spin_unlock_irqrestore(&modem_power_spinlock, lock_flag);
         return (ssize_t)count;
     }
-    else if(state == BALONG_MODEM_ON) /* TODO: ÊÇ·ñÐèÒªÉÏµç£¬¸ùHIFIÊ²Ã´¹ØÏµ */
+    else if(state == BALONG_MODEM_ON) /* TODO: ï¿½Ç·ï¿½ï¿½ï¿½Òªï¿½Ïµç£¬ï¿½ï¿½HIFIÊ²Ã´ï¿½ï¿½Ïµ */
     {
         if((modem_power_off_flag)&&(!modem_power_on_flag))
         {
@@ -280,7 +280,7 @@ static struct platform_device balong_power_device = {
     },/*lint !e785*/
 };/*lint !e785*/
 
-static struct platform_driver balong_power_drv = {
+static struct platform_driver balong_power_drv __refdata = {
     .probe      = bsp_power_probe,
     .driver     = {
         .name     = "balong_power",

@@ -119,7 +119,7 @@ void buddy_track_show(void)
 	}
 }
 
-int buddy_track_map(int nid)
+int __meminit buddy_track_map(int nid)
 {
 	phys_addr_t size;
 	void *base = NULL;

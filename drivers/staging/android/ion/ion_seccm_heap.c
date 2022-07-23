@@ -65,7 +65,7 @@ struct ion_seccm_heap {
 
 struct cma *hisi_sec_cma = NULL;
 
-static int  hisi_sec_cma_set_up(struct reserved_mem *rmem)
+static int __init hisi_sec_cma_set_up(struct reserved_mem *rmem)
 {
 	phys_addr_t align = PAGE_SIZE << max(MAX_ORDER - 1, pageblock_order);
 	phys_addr_t mask = align - 1;

@@ -71,7 +71,7 @@
  static int reserved_mem_count = 0;
 
 
-static int modem_mperf_reserve_area(struct reserved_mem *rmem)
+static int __init modem_mperf_reserve_area(struct reserved_mem *rmem)
 {
 	char *status = NULL;
       s_mem_pr_err("enter modem_mperf_reserve_area 0x%llx, size is 0x%llx\n",

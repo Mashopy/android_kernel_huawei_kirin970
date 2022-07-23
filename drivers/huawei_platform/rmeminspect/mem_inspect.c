@@ -180,7 +180,7 @@ static int __init memdev_init(void)
 }
 
 /* unload device driver module */
-static void __exit memdev_exit(void)
+static void memdev_exit(void)
 {
 	int i;
 
