@@ -23,6 +23,10 @@ config HISI_COUL_HI6421V800
 config HISI_COUL_HI6555V300
 	bool "hisi hi6555v300 coul"
 	default n
+config HISI_COUL_IMONITOR
+        bool "hisi cool imonitor"
+        depends on HISI_COUL && LOG_EXCEPTION
+        default n
 config HISI_COUL_TEST
         bool "hisi coul test"
         default n

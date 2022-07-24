@@ -819,7 +819,9 @@ static int32_t Update_Firmware(void)
 	// Step 2 : Resume PD
 	ret = Nova_Resume_PD();
 	if (ret) {
+#if defined (CONFIG_HUAWEI_DSM)
 		nvt_ts->chip_data->ts_platform_data->dsm_info.constraints_UPDATE_status = Nova_Resume_PD_fail;
+#endif
 		TS_LOG_ERR("%s:Nova_Resume_PD fail\n",__func__);
 		return ret;
 	}
@@ -827,7 +829,9 @@ static int32_t Update_Firmware(void)
 	// Step 3 : Erase
 	ret = Erase_Flash();
 	if (ret) {
+#if defined (CONFIG_HUAWEI_DSM)
 		nvt_ts->chip_data->ts_platform_data->dsm_info.constraints_UPDATE_status = Erase_Flash_fail;
+#endif
 		TS_LOG_ERR("%s:Erase_Flash fail\n",__func__);
 		return ret;
 	}
@@ -835,7 +839,9 @@ static int32_t Update_Firmware(void)
 	// Step 4 : Program
 	ret = Write_Flash();
 	if (ret) {
+#if defined (CONFIG_HUAWEI_DSM)
 		nvt_ts->chip_data->ts_platform_data->dsm_info.constraints_UPDATE_status = Write_Flash_fail;
+#endif
 		TS_LOG_ERR("%s:Write_Flash fail\n",__func__);
 		return ret;
 	}
@@ -843,7 +849,9 @@ static int32_t Update_Firmware(void)
 	// Step 5 : Verify
 	ret = Verify_Flash();
 	if (ret) {
+#if defined (CONFIG_HUAWEI_DSM)
 		nvt_ts->chip_data->ts_platform_data->dsm_info.constraints_UPDATE_status = Verify_Flash_fail;
+#endif
 		TS_LOG_ERR("%s:Verify_Flash fail\n",__func__);
 		return ret;
 	}

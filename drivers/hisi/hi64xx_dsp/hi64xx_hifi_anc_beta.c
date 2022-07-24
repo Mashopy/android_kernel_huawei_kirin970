@@ -12,8 +12,10 @@
 #include "hi64xx_hifi_debug.h"
 #include "hi64xx_hifi_om.h"
 #include "hi64xx_hifi_misc.h"
+#ifdef CONFIG_LOG_EXCEPTION
 #include "huawei_platform/log/imonitor.h"
 #include "huawei_platform/log/imonitor_keys.h"
+#endif
 
 
 /*lint -e655 -e838 -e730 -e754 -e747 -e731*/
@@ -177,6 +179,7 @@ void anc_beta_generate_path(hook_pos pos, const char *base_path, char *full_path
       }
 }
 
+#ifdef CONFIG_LOG_EXCEPTION
 int anc_beta_log_upload(void* data)
 {
 	MLIB_ANC_DFT_INFO *info = (MLIB_ANC_DFT_INFO *)data;
@@ -206,7 +209,9 @@ int anc_beta_log_upload(void* data)
 
 	return ret;
 }
+#endif
 
+#if defined(CONFIG_HUAWEI_DSM) && defined (CONFIG_LOG_EXCEPTION)
 int dsm_beta_dump_file(void* data, bool create_dir)
 {
 	MLIB_DSM_DFT_INFO *info = (MLIB_DSM_DFT_INFO *)data;
@@ -258,7 +263,9 @@ int dsm_beta_log_upload(void* data)
 
 	return ret;
 }
+#endif
 
+#ifdef CONFIG_LOG_EXCEPTION
 int virtual_btn_beta_dump_file(const void* data, unsigned int len, bool create_dir)
 {
 	char fullname[HOOK_PATH_MAX_LENGTH] = {0};
@@ -311,4 +318,4 @@ int virtual_btn_beta_log_upload(VITRUAL_BNT_DATA_LOG *info)
 
 	return ret;
 }
-
+#endif

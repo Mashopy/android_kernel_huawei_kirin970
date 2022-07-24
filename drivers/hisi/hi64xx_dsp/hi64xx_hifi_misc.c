@@ -1537,10 +1537,13 @@ static int virtual_btn_beta_upload(void* data)
 		virtual_btn_param_dump(info);
 	}
 	do_gettimeofday(&time_update);
+
+#ifdef CONFIG_LOG_EXCEPTION
 	if (time_update.tv_sec - dsp_priv->btn_upload_time.tv_sec > VIRTUAL_BTN_DAY_SECOND) {
 		dsp_priv->btn_upload_time.tv_sec = time_update.tv_sec;
 		virtual_btn_beta_log_upload(info);
 	}
+#endif
 
 	return 0;
 }
@@ -1565,20 +1568,28 @@ static void dsp_to_ap_msg_proc(unsigned char * msg_buff)
 		anc_beta_stop_hook();
 		break;
 	case ANC_MSG_TRIGGER_DFT:
+#ifdef CONFIG_LOG_EXCEPTION
 		anc_beta_log_upload(msg_body);
 		break;
+#endif
 	case DSM_MSG_PARAM:
 	case DSM_MSG_MONO_STATIC0:
+#if defined(CONFIG_HUAWEI_DSM) && defined(CONFIG_LOG_EXCEPTION)
 		dsm_beta_dump_file(msg_body, true); /*lint !e747*/
 		dsm_beta_log_upload(msg_body);
 		break;
+#endif
 	case DSM_MSG_DUAL_STATIC0:
+#if defined(CONFIG_HUAWEI_DSM) && defined(CONFIG_LOG_EXCEPTION)
 		dsm_beta_dump_file(msg_body, true); /*lint !e747*/
 		break;
+#endif
 	case DSM_MSG_DUAL_STATIC1:
+#if defined(CONFIG_HUAWEI_DSM) && defined(CONFIG_LOG_EXCEPTION)
 		dsm_beta_dump_file(msg_body, false); /*lint !e747*/
 		dsm_beta_log_upload(msg_body);
 		break;
+#endif
 	case PA_MSG_BUFFER_REVERSE:
 		reverse_msg = (struct pa_buffer_reverse_msg *)(msg_buff + 4); /*lint !e826*/
 		HI64XX_DSP_ERROR("pa count:%u, proc time:%u00us\n",
@@ -1589,8 +1600,10 @@ static void dsp_to_ap_msg_proc(unsigned char * msg_buff)
 		#endif
 		break;
 	case VIRTUAL_BTN_MONITOR:
+#ifdef CONFIG_LOG_EXCEPTION
 		virtual_btn_beta_upload(msg_body);
 		break;
+#endif
 	default:
 		HI64XX_DSP_WARNING("message id 0x%x not support\n", msg_id);
 		break;

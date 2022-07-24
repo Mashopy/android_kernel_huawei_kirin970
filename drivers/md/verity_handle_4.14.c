@@ -315,7 +315,11 @@ static int dataops_for_bv_block(struct dm_verity *v, struct dm_verity_io *io,
 	struct bio *bio = dm_bio_from_per_bio_data(io, v->ti->per_io_data_size);
 
 	if (!data)
+#if defined(CONFIG_HUAWEI_DSM)
 		return PARAMETER_ERR;
+#else
+		return -1;
+#endif
 	do {
 		u8 *page = NULL;
 		unsigned int len;

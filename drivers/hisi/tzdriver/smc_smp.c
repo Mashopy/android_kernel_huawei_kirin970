@@ -668,7 +668,9 @@ int raw_smc_send(uint32_t cmd, phys_addr_t cmd_addr,
 void siq_dump(phys_addr_t mode)
 {
 	raw_smc_send(TSP_REE_SIQ, mode, 0, false);
+#ifdef CONFIG_TEELOG
 	tz_log_write();
+#endif
 	do_cmd_need_archivelog();
 }
 

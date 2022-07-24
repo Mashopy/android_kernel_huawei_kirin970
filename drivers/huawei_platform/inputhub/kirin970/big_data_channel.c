@@ -16,7 +16,9 @@
 #include "contexthub_ext_log.h"
 #include "sensor_detect.h"
 #include <huawei_platform/log/hwlog_kernel.h>
+#ifdef CONFIG_LOG_EXCEPTION
 #include <huawei_platform/log/imonitor.h>
+#endif
 #include "big_data_channel.h"
 
 
@@ -112,6 +114,7 @@ int iomcu_dubai_log_fetch(uint32_t event_type, void *data, uint32_t length)
 	return ret;
 }
 
+#ifdef CONFIG_LOG_EXCEPTION
 static int process_big_data(uint32_t event_id, void* data)
 {
 	struct imonitor_eventobj* obj = NULL;
@@ -165,6 +168,7 @@ static int process_big_data(uint32_t event_id, void* data)
 	imonitor_destroy_eventobj(obj);
 	return ret;
 }
+#endif
 
 static int iomcu_big_data_process(const pkt_header_t *head)
 {
@@ -186,9 +190,10 @@ static int iomcu_big_data_process(const pkt_header_t *head)
 		case BIG_DATA_EVENT_MOTION_TYPE:
 		case BIG_DATA_EVENT_DDR_INFO:
 		case BIG_DATA_EVENT_TOF_PHONECALL:
+#ifdef CONFIG_LOG_EXCEPTION
 			process_big_data(report_t->event_id, data);
 			break;
-
+#endif
 		default:
 			hwlog_info("iomcu_big_data_process no matched event id:%d \n",report_t->event_id);
 			break;

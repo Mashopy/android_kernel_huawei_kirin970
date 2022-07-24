@@ -46,7 +46,9 @@
 #include "clock.h"
 #include "usbaudio_dsp_client.h"
 #include "usbaudio_ioctl.h"
+#ifdef CONFIG_LOG_EXCEPTION
 #include "huawei_platform/log/imonitor.h"
+#endif
 
 
 #ifdef CLT_AUDIO
@@ -300,6 +302,7 @@ void usbaudio_ctrl_query_info(struct usbaudio_info *usbinfo)
 	mutex_unlock(&connect_mutex);
 }
 
+#ifdef CONFIG_LOG_EXCEPTION
 static int usbaudio_ctrl_typeC_log_upload(void *data)
 {
 	struct snd_usb_audio *info = NULL;
@@ -331,6 +334,8 @@ static int usbaudio_ctrl_typeC_log_upload(void *data)
 	}
 	return ret;
 }
+#endif
+
 void usbaudio_ctrl_set_chip(struct snd_usb_audio *chip)
 {
 	mutex_lock(&connect_mutex);
@@ -355,9 +360,11 @@ void usbaudio_ctrl_set_chip(struct snd_usb_audio *chip)
 		usbaudio_hifi->info.usbid = chip->usb_id;
 		send_usbaudioinfo2hifi(usbaudio_hifi->chip, &usbaudio_hifi->pcms);
 	}
+#ifdef CONFIG_LOG_EXCEPTION
 	if(usbaudio_ctrl_typeC_log_upload(chip) < 0){
 		 pr_err("imonitor send eventobj error\n");
 	}
+#endif
 	if (chip) {
 		pr_info("usbaudio_ctrl_set_chip: usb id is 0x%x , name is %s\n", chip->usb_id, chip->card->shortname);
 		if(hisi_usb_using_hifi_usb(chip->dev)

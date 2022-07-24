@@ -671,9 +671,11 @@ return:
 int32_t nvt_kit_fw_update_boot_spi(char *file_name)
 {
 	int32_t ret = 0;
+#if defined (CONFIG_HUAWEI_DSM)
 	if(nvt_ts->use_dma_download_firmware){
 		g_ts_kit_platform_data.spidev0_chip_info.com_mode = DMA_MODE;
 	}
+#endif
 
 	ret = update_firmware_request(file_name);
 	//TODO: project id not ready. force update ts/touch_screen_firmware.bin
@@ -714,11 +716,11 @@ download_fail:
 	}
 	update_firmware_release();
 request_firmware_fail:
-
+#if defined (CONFIG_HUAWEI_DSM)
 	if(nvt_ts->use_dma_download_firmware){
 		g_ts_kit_platform_data.spidev0_chip_info.com_mode = POLLING_MODE;
 	}
-
+#endif
 	return ret;
 }
 

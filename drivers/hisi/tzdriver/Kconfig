@@ -17,7 +17,7 @@ config  TZDRIVER
 config TEELOG
 	tristate "Secure Execution Log driver"
 	default n
-	depends on TZDRIVER
+	depends on TZDRIVER && LOG_EXCEPTION
 	help
 	  TEEOS log
 

@@ -132,11 +132,15 @@ void FUSB3601_core_state_machine(struct Port *port)
 			hwlog_info("FUSB %s - Fault Interrupt, FaultStat: [0x%x]\n",__func__, port->registers_.FaultStat.byte);
 			if (port->registers_.FaultStat.VBUS_OVP) {
 				hwlog_info("FUSB %s - VBUS_OVP Interrupt, ADC Voltage: [%d]\n",__func__,FUSB3601_GetVBusVoltage(port));
+#ifdef CONFIG_LOG_EXCEPTION
 				superswitch_dsm_report(ERROR_SUPERSWITCH_VBUS_OVP);
+#endif
 			}
 			if (port->registers_.FaultStat.VCONN_OCP) {
 				hwlog_info("FUSB %s - VCONN_OCP Interrupt\n",__func__);
+#ifdef CONFIG_LOG_EXCEPTION
 				superswitch_dsm_report(ERROR_SUPERSWITCH_VCONN_OCP);
+#endif
 			}
 			FUSB3601_ClearInterrupt(port, regFAULTSTAT, MSK_FAULTSTAT_ALL);
 			FUSB3601_ClearInterrupt(port, regALERTH, MSK_I_FAULT);

@@ -90,11 +90,12 @@ int wacom_iowrite_more(u8 *data_buf, u16 buf_size)
 	} else {
 		TS_LOG_ERR("%s,fail write rc=%d\n", __func__, ret);
 		ret = -EIO;
-
+#ifdef CONFIG_HUAWEI_DSM
 		ts_dmd_report(DSM_TP_I2C_RW_ERROR_NO, "irq_gpio:%d value:%d reset_gpio:%d  value:%d. I2C_status:%d;addr:%d.\n",
                 g_ts_kit_platform_data.irq_gpio, gpio_get_value(g_ts_kit_platform_data.irq_gpio),\
                 g_ts_kit_platform_data.reset_gpio, gpio_get_value(g_ts_kit_platform_data.reset_gpio), \
                 g_ts_kit_platform_data.dsm_info.constraints_I2C_status, wac_data->client->addr);
+#endif
 	}
 
 	// if OK, return length

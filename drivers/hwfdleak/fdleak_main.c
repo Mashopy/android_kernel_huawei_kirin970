@@ -28,7 +28,9 @@
 #include <linux/vmalloc.h>
 #include <linux/mm.h>
 #include <linux/stacktrace.h>
+#ifdef CONFIG_LOG_EXCEPTION
 #include <log/log_usertype.h>
+#endif
 #include <chipset_common/hwlogger/hw_logger.h>
 
 #define fdleak_err(format, ...)  \
@@ -72,7 +74,9 @@ struct stack_frame_user32 {
 };
 static unsigned long long stack_entries[FDLEAK_MAX_STACK_TRACE_DEPTH];
 
+#ifdef CONFIG_LOG_EXCEPTION
 static unsigned int usertype;
+#endif
 static int tgid_hiview;
 
 DEFINE_MUTEX(mutex);
@@ -444,6 +448,7 @@ int fdleak_report(enum fdleak_wp_id wpid, int probe_id)
 	int idx_pid;
 	struct stack_trace trace;
 
+#ifdef CONFIG_LOG_EXCEPTION
 	if (usertype != BETA_USER) {
 		if (usertype)
 			return -1;
@@ -451,6 +456,8 @@ int fdleak_report(enum fdleak_wp_id wpid, int probe_id)
 		if (usertype != BETA_USER)
 			return -1;
 	}
+#endif
+
 	mutex_lock(&mutex);
 	idx_pid = fdleak_find_pid(current->tgid, wpid);
 
@@ -486,7 +493,9 @@ EXPORT_SYMBOL(fdleak_report);
 
 static int __init fdleak_init(void)
 {
+#ifdef CONFIG_LOG_EXCEPTION
 	usertype = get_logusertype_flag();
+#endif
 	return 0;
 }
 

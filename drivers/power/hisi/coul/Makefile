@@ -21,7 +21,8 @@ endif
 endif
 
 obj-$(CONFIG_HISI_COUL)             += hisi_coul_core.o hisi_coul_drv.o
-obj-$(CONFIG_HISI_COUL)             += hisi_coul_event.o hisi_coul_imonitor.o
+obj-$(CONFIG_HISI_COUL)             += hisi_coul_event.o
+obj-$(CONFIG_HISI_COUL_IMONITOR)    += hisi_coul_imonitor.o
 obj-$(CONFIG_HISI_COUL_POLAR)       += hisi_coul_polar.o
 obj-$(CONFIG_HISI_COUL_TEST)        += hisi_coul_drv_test.o
 

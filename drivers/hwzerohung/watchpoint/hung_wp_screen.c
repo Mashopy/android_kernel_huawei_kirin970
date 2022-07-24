@@ -19,7 +19,9 @@
 #ifdef CONFIG_HW_ZEROHUNG
 #include "chipset_common/hwzrhung/zrhung.h"
 #include "chipset_common/hwzrhung/hung_wp_screen.h"
+#ifdef CONFIG_LOG_EXCEPTION
 #include <log/log_usertype.h>
+#endif
 #endif
 
 #include <linux/kernel.h>
@@ -405,6 +407,7 @@ void hung_wp_screen_send_work(struct work_struct *work)
 	cur_stamp = local_clock() / NANOS_PER_SECOND;
 #endif
 	pr_err("%s: cur_stamp=%llu\n", __func__, cur_stamp);
+#ifdef CONFIG_LOG_EXCEPTION
 	if (get_logusertype_flag() == BETA_USER)
 		snprintf(cmd_buf, COMAND_LEN_MAX, CMD_BUF_FMT_BETA,
 			 data.config->timeout + BUFFER_TIME_START,
@@ -413,7 +416,7 @@ void hung_wp_screen_send_work(struct work_struct *work)
 		snprintf(cmd_buf, COMAND_LEN_MAX, CMD_BUF_FMT,
 			 data.config->timeout + BUFFER_TIME_START,
 			 cur_stamp + BUFFER_TIME_END);
-
+#endif
 	pr_err("%s: cmd_buf: %s\n", __func__, cmd_buf);
 	zrhung_send_event(data.check_id, cmd_buf, "none");
 	pr_err("%s: send event: %d\n", __func__, data.check_id);

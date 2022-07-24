@@ -36,7 +36,9 @@
 #endif
 #include <securec.h>
 #include "../charge_time/hisi_charge_time.h"
+#ifdef CONFIG_HISI_COUL_IMONITOR
 #include "hisi_coul_imonitor.h"
+#endif
 #ifdef CONFIG_HISI_ASW
 #include "../asw/asw_protect.h"
 #endif /* CONFIG_HISI_ASW */
@@ -4306,7 +4308,7 @@ out:
     soc_new = bound_soc(soc_new);
     return soc_new;
 }
-/* µçÁ¿Æ½»¬ÐÞÕý*/
+/* ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 /*******************************************************
   Function:        limit_soc
   Description:     limt soc
@@ -5276,6 +5278,7 @@ static void coul_set_work_interval(struct smartstar_coul_device *di)
 #endif
 }
 
+#ifdef CONFIG_HISI_COUL_IMONITOR
 static void coul_imonitor_prepare_basp_basic_info(
 	struct smartstar_coul_device *di,
 	struct coul_imonitor_basp_basic_info *info)
@@ -5334,6 +5337,7 @@ static void coul_imonitor_prepare_basp_basic_info(
 	if (ret != EOK)
 		coul_core_err("fcc_time3 memcpy failed\n");
 }
+#endif
 
  /*******************************************************
   Function:        calculate_soc_work
@@ -5363,7 +5367,9 @@ static void coul_imonitor_prepare_basp_basic_info(
     static int charging_done_ocv_enter_time;
     int charging_done_now_time;
     int ocv_time_inc;
+#ifdef CONFIG_HISI_COUL_IMONITOR
 	struct coul_imonitor_basp_basic_info basp_basic_info;
+#endif
 
     if( NULL == di || NULL== work)
     {
@@ -5395,11 +5401,14 @@ static void coul_imonitor_prepare_basp_basic_info(
     }
 	coul_set_low_vol_int(di, LOW_INT_STATE_RUNNING);
     basp_fcc_learn_evt_handler(di, EVT_PER_CHECK);
+
+#ifdef CONFIG_HISI_COUL_IMONITOR
 	if (di->basp_total_level > 0) {
 		coul_imonitor_prepare_basp_basic_info(di, &basp_basic_info);
 		coul_imonitor_periodic_report(COUL_IMONITOR_BASP_BASIC_INFO,
 			&basp_basic_info);
 	}
+#endif
 
     offset_cur_modify_val = di->coul_dev_ops->get_offset_current_mod();
     coul_core_info("offset_cur_modify_val:0x%x\n", offset_cur_modify_val);
@@ -5522,7 +5531,7 @@ int coul_judge_soc_supply_level(struct smartstar_coul_device *di,
 /*
  * judge if we could update temp level
  * when report supply current with thermal table
- * temperature  is in ¡æ
+ * temperature  is in ï¿½ï¿½
  */
 bool coul_judge_update_temp_level(struct smartstar_coul_device *di,
 			int first_run, int temp, int last_temp, int temp_idx)
@@ -5539,7 +5548,7 @@ bool coul_judge_update_temp_level(struct smartstar_coul_device *di,
 
 /*
  * report supply current with thermal table
- * temperature is in ¡æ
+ * temperature is in ï¿½ï¿½
  */
 int coul_get_polar_table_val(int temp, int soc)
 {
@@ -5560,7 +5569,7 @@ int coul_get_polar_table_val(int temp, int soc)
 	}
 
 	temp_max = supply_temp_points[0] + di->supply_info[0].temp_back;
-	/*in case polar is disabled or temp > 5¡æ when first run*/
+	/*in case polar is disabled or temp > 5ï¿½ï¿½ when first run*/
 	if ((first_run && i == 0) || temp > temp_max)
 		return CURR_AVG_DEFAULT;
 
@@ -8181,7 +8190,7 @@ static void update_polar_ocv(struct smartstar_coul_device *di,
     unsigned long sample_time_rtc = 0;
     if (NULL == di)
         return;
-    /*ÅÐ¶ÏecoÊý¾ÝÊÇ·ñ±»Çå¿Õ*/
+    /*ï¿½Ð¶ï¿½ecoï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½*/
     di->coul_dev_ops->get_eco_sample_flag(&eco_sample_flag);
     current_sec = di->coul_dev_ops->get_coul_time();
     coul_core_debug("[%s]vbat:0x%x, ibat:0x%x\n",

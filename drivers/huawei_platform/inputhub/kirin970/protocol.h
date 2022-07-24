@@ -122,7 +122,9 @@ typedef enum {
 	CMD_CMN_FLUSH_REQ,
 	CMD_CMN_FLUSH_RESP,
 
+#ifdef CONFIG_HUAWEI_DSM
 	CMD_DATA_REQ = 0x1f,
+#endif
 	CMD_DATA_RESP,
 
 	CMD_SET_FAULT_TYPE_REQ,//0x21
@@ -209,6 +211,114 @@ typedef enum {
 
 	/*max cmd*/
 	CMD_ERR_RESP = 0xfe,
+
+#ifndef CONFIG_HUAWEI_DSM
+	CMD_PRIVATE = 0x1f,
+	CMD_DATA_REQ = CMD_PRIVATE,
+
+	/*accel send to mcu with no para*/
+	CMD_SELFCALI_REQ,
+	CMD_SELFCALI_RESP,
+
+	CMD_SET_PARAMET_REQ,
+	CMD_SET_PARAMET_RESP,
+	CMD_SET_OFFSET_REQ,
+	CMD_SET_OFFSET_RESP,
+	CMD_SELFTEST_REQ,
+	CMD_SELFTEST_RESP,
+
+	/*mag cap_prox read data from nv and send it to mcu*/
+	CMD_SET_CALIBRATE_REQ,
+	CMD_SET_CALIBRATE_RESP,
+
+	/*calibrate data from mcu, then write to nv*/
+	CMD_CALIBRATE_DATA_REQ,
+	CMD_CALIBRATE_DATA_RESP,
+
+	/*gyro none use*/
+	CMD_CONFIG_REQ,
+	CMD_CONFIG_RESP,
+
+	CMD_SET_SLAVE_ADDR_REQ,
+	CMD_SET_SLAVE_ADDR_RESP,
+
+	CMD_SET_OIS_REQ,
+	CMD_SET_OIS_RESP,
+
+	CMD_ADDITIONAL_INFO_REQ,
+	CMD_ADDITIONAL_INFO_RESP,
+
+	CMD_FW_DLOAD_REQ,
+	CMD_FW_DLOAD_RESP,
+	CMD_BACKLIGHT_REQ,
+	CMD_BACKLIGHT_RESP,
+
+	CMD_SET_RESET_PARAM_REQ,
+	CMD_SET_RESET_PARAM_RESP,
+
+	CMD_RAMDUMP_REQ = CMD_PRIVATE,
+	CMD_RAMDUMP_RESP,
+
+	/*gyroscopy command*/
+	CMD_GYRO_DATA_REQ = CMD_DATA_REQ,
+	CMD_GYRO_DATA_RESP = CMD_DATA_RESP,
+	CMD_GYRO_SELFTEST_REQ = CMD_SELFTEST_REQ,
+	CMD_GYRO_SELFTEST_RESP = CMD_SELFTEST_RESP,
+	CMD_GYRO_PARAMET_REQ = CMD_SET_PARAMET_REQ,
+	CMD_GYRO_PARAMET_RESP = CMD_SET_PARAMET_RESP,
+	CMD_GYRO_CONFIG_REQ = CMD_CONFIG_REQ,
+	CMD_GYRO_CONFIG_RESP = CMD_CONFIG_RESP,
+	CMD_GYRO_SELFCALI_REQ = CMD_SELFCALI_REQ,
+	CMD_GYRO_SELFCALI_RESP = CMD_SELFCALI_RESP,
+	CMD_GYRO_OFFSET_REQ = CMD_SET_OFFSET_REQ,
+	CMD_GYRO_OFFSET_RESP = CMD_SET_OFFSET_RESP,
+	CMD_GYRO_OIS_REQ = CMD_SET_OIS_REQ,
+	CMD_GYRO_OIS_RESP = CMD_SET_OIS_RESP,
+
+	/*magnetometer command*/
+	CMD_MAG_DATA_REQ = CMD_DATA_REQ,
+	CMD_MAG_DATA_RESP = CMD_DATA_RESP,
+	CMD_MAG_SELFTEST_REQ = CMD_SELFTEST_REQ,
+	CMD_MAG_SELFTEST_RESP = CMD_SELFTEST_RESP,
+	CMD_MAG_PARAMET_REQ = CMD_SET_PARAMET_REQ,
+	CMD_MAG_PARAMET_RESP = CMD_SET_PARAMET_RESP,
+	CMD_MAG_SET_CALIBRATE_TO_MCU_REQ = CMD_SET_OFFSET_REQ,
+	CMD_MAG_SET_CALIBRATE_TO_MCU_RESP = CMD_SET_OFFSET_RESP,
+	CMD_MAG_SEND_CALIBRATE_TO_AP_REQ = CMD_CALIBRATE_DATA_REQ,
+	CMD_MAG_SEND_CALIBRATE_TO_AP_RESP = CMD_CALIBRATE_DATA_RESP,
+
+	/*accelerometer command*/
+	CMD_ACCEL_DATA_REQ = CMD_DATA_REQ,
+	CMD_ACCEL_DATA_RESP = CMD_DATA_RESP,
+	CMD_ACCEL_SELFCALI_REQ = CMD_SELFCALI_REQ,
+	CMD_ACCEL_SELFCALI_RESP = CMD_SELFCALI_RESP,
+	CMD_ACCEL_PARAMET_REQ = CMD_SET_PARAMET_REQ,
+	CMD_ACCEL_PARAMET_RESP = CMD_SET_PARAMET_RESP,
+	CMD_ACCEL_OFFSET_REQ = CMD_SET_OFFSET_REQ,
+	CMD_ACCEL_OFFSET_RESP = CMD_SET_OFFSET_RESP,
+	CMD_ACCEL_SELFTEST_REQ = CMD_SELFTEST_REQ,
+	CMD_ACCEL_SELFTEST_RESP = CMD_SELFTEST_RESP,
+
+	/*GSENSOR GATHER used for GPS*/
+	CMD_GPS_4774_I2C_PARAMET_REQ = CMD_SET_PARAMET_REQ,
+	CMD_GPS_4774_I2C_PARAMET_RESP = CMD_SET_PARAMET_RESP,
+	CMD_GPS_4774_I2C_CONFIG_REQ = CMD_PRIVATE,
+	CMD_GPS_4774_I2C_CONFIG_RESP,
+	CMD_GPS_4774_I2C_SELFTEST_REQ = CMD_SELFTEST_REQ,
+	CMD_GPS_4774_I2C_SELFTEST_RESP = CMD_SELFTEST_RESP,
+
+	/*handpress sensor*/
+	CMD_HANDPRESS_DATA_REQ = CMD_DATA_REQ,
+	CMD_HANDPRESS_DATA_RESP = CMD_DATA_RESP,
+	CMD_HANDPRESS_PARAMET_REQ = CMD_SET_PARAMET_REQ,
+	CMD_HANDPRESS_PARAMET_RESP = CMD_SET_PARAMET_RESP,
+	CMD_HANDPRESS_SELFCALI_REQ = CMD_SELFCALI_REQ,
+	CMD_HANDPRESS_SELFCALI_RESP = CMD_SELFCALI_RESP,
+	CMD_HANDPRESS_SET_CALIDATA_REQ = CMD_SET_OFFSET_REQ,
+	CMD_HANDPRESS_SET_CALIDATA_RESP = CMD_SET_OFFSET_RESP,
+	CMD_HANDPRESS_SELFTEST_REQ = CMD_SELFTEST_REQ,
+	CMD_HANDPRESS_SELFTEST_RESP = CMD_SELFTEST_RESP,
+#endif
 } obj_cmd_t;
 
 typedef enum{
@@ -650,15 +760,15 @@ typedef struct
 
 typedef struct interval_param{
 	uint32_t  period;
-	//Ã¿batch_count×éÊý¾ÝÉÏ±¨Ò»´Î£¬in & out£¬
-	//ÊäÈëÎªÆÚÍûÖµ£¬Êä³öÎªÆ÷¼þÊµ¼ÊÖ§³ÖµÄ×î½Ó½üµÄÖµ
+	//Ã¿batch_countï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½Ò»ï¿½Î£ï¿½in & outï¿½ï¿½
+	//ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Ö§ï¿½Öµï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½Öµ
 	uint32_t	batch_count;
-	//0£º×Ô¶¯Ä£Ê½£¬ÓÉMCU¸ù¾ÝÒµÎñÌØµã¼°ÏµÍ³×´Ì¬µÈÌõ¼þÀ´ÅÐ¶ÏÊÇ·ñÉÏ±¨£»
-	//1£ºFIFO(Batch)£¬¿ÉÄÜ»áÓÐ¶àÌõ¼ÇÂ¼£»
-	//2£ºIntegrate,½«×îÐÂÊý¾Ý¸üÐÂ/ÀÛ¼Ó£¬µ«²»Ôö¼Ó¼ÇÂ¼£¬Ôñ»úÉÏ±¨£»
-	//3£ºÊµÊ±Ä£Ê½£¬²»¹ÜAP´¦ÓÚºÎÖÖ×´Ì¬£¬ÊµÊ±ÉÏ±¨
+	//0ï¿½ï¿½ï¿½Ô¶ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½MCUï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½Øµã¼°ÏµÍ³×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½Ï±ï¿½ï¿½ï¿½
+	//1ï¿½ï¿½FIFO(Batch)ï¿½ï¿½ï¿½ï¿½ï¿½Ü»ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½
+	//2ï¿½ï¿½Integrate,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½/ï¿½Û¼Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¼ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½
+	//3ï¿½ï¿½ÊµÊ±Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½APï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ÊµÊ±ï¿½Ï±ï¿½
 	uint8_t	mode;
-	uint8_t	reserved[3]; //reserved[0]Ä¿Ç°motionÓë¼Æ²½Æ÷Ê¹ÓÃ
+	uint8_t	reserved[3]; //reserved[0]Ä¿Ç°motionï¿½ï¿½Æ²ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
 }__packed interval_param_t;
 
 typedef struct {

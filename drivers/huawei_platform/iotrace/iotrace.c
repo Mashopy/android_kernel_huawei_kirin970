@@ -23,7 +23,9 @@
 #include <linux/namei.h>
 #include <linux/f2fs_fs.h>
 #include <trace/iotrace.h>
+#ifdef CONFIG_LOG_EXCEPTION
 #include "huawei_platform/log/imonitor.h"
+#endif
 
 typedef u32 block_t;
 typedef u32 nid_t;
@@ -625,6 +627,7 @@ static void io_trace_clear_account(void)
 	ufs_tag_cnt_four = 0;
 }
 
+#ifdef CONFIG_LOG_EXCEPTION
 static int io_trace_count_upload(void)
 {
 	unsigned int ret = 0;
@@ -755,7 +758,9 @@ static int io_trace_count_upload(void)
 
 	return 0;
 }
+#endif
 
+#ifdef CONFIG_LOG_EXCEPTION
 #ifdef CONFIG_SCSI_UFS_HI1861_VCMD
 #ifdef HI18VV_FSR_GET_THREAD
 static int io_trace_fsr_upload(void)
@@ -775,6 +780,7 @@ static int io_trace_fsr_upload(void)
 
     return 0;
 }
+#endif
 #endif
 #endif
 
@@ -2904,6 +2910,7 @@ static int io_count_thread_fn(void *data)
 
         io_trace_this->enable = 0;
 
+#ifdef CONFIG_LOG_EXCEPTION
         ret = io_trace_count_upload();
 
         if (ret < 0){
@@ -2911,6 +2918,7 @@ static int io_count_thread_fn(void *data)
         }
 
         io_trace_this->enable = 1;
+#endif
     }
     return 0;
 }
@@ -2964,6 +2972,7 @@ static int apr_work_thread_fn(void *data)
 			filp_close(fsr_filp, NULL);
 		}
 
+#ifdef CONFIG_LOG_EXCEPTION
         ret = io_trace_fsr_upload();
         if (ret < 0)
         {
@@ -2971,6 +2980,7 @@ static int apr_work_thread_fn(void *data)
         }
 
         io_trace_this->enable = 1;
+#endif
     }
     return 0;
 }

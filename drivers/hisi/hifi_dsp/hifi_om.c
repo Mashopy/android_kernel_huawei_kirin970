@@ -36,8 +36,10 @@
 #include "hifi_om.h"
 #include "drv_mailbox_msg.h"
 #include "hisi_rproc.h"
+#ifdef CONFIG_LOG_EXCEPTION
 #include "huawei_platform/log/imonitor.h"
 #include "huawei_platform/log/imonitor_keys.h"
+#endif
 
 #ifdef CONFIG_HUAWEI_DSM
 #include <dsm_audio/dsm_audio.h>
@@ -60,7 +62,9 @@ struct hifi_om_s g_om_data;
 #define BLKMIC_SECTHR (64)
 #define BLKMIC_SECFOUR (128)
 #define HIFI_AP_MESG_CNT (127)
+#ifdef CONFIG_LOG_EXCEPTION
 #define IMONITOR_UPDATIME (96400) /*seconds number of one day*/
+#endif
 #define BIGDATA_VOICE_HSEVENTID (916200001)
 #define BIGDATA_VOICE_HFEVENTID (916200002)
 #define BIGDATA_VOICE_HESEVENTID (916200003)
@@ -131,8 +135,10 @@ static  void hifi_om_show_audio_detect_info(struct work_struct *work);
 static  void hifi_om_show_voice_3a_info(struct work_struct *work);
 static  void hifi_om_voice_bigdata_handler(struct work_struct *work);
 static  void voice_bigdata_decode(char arrayblock[2][20], char arraybigdata[4][64], unsigned char *data);
+#ifdef CONFIG_LOG_EXCEPTION
 static  void voice_bigdata_update_imonitor_inc_blkmic(unsigned int eventID, unsigned short paramid, imedia_voice_bigdata_to_imonitor *voice_bigdata_buff, const char *blockmic);
 static  void voice_bigdata_update_imonitor(unsigned int eventID, unsigned short paramid, imedia_voice_bigdata_to_imonitor *voice_bigdata_buff);
+#endif
 static  void hifi_om_work_smartpa_dft_report(struct work_struct *work);
 
 static struct hifi_om_work_info work_info[] = {
@@ -541,7 +547,9 @@ static void smartpa_dft_report_process_abnormal_gain(struct smartpa_msg *msg)
 	int ret;
 	struct pa_status_str status_str = { {0}, {0}, {0}, {0}, {0}, {0} };
 	struct smartpa_info *info = (struct smartpa_info *)(&(msg->msg_body));
+#ifdef CONFIG_LOG_EXCEPTION
 	struct imonitor_eventobj *obj = NULL;
+#endif
 	imedia_dft_report_raw_data_t *pa_status = NULL;
 
 	if (info->err_chl >= IMEDIA_SMARTPA_MAX_CHANNEL) {
@@ -571,6 +579,7 @@ static void smartpa_dft_report_process_abnormal_gain(struct smartpa_msg *msg)
 			pa_status->box_vendor[info->err_chl], pa_status->calibration_value[info->err_chl],
 			pa_status->chip_model);/*lint !e747*/ /* unsafe_function_ignore: snprintf */
 
+#ifdef CONFIG_LOG_EXCEPTION
 	obj = imonitor_create_eventobj(SOC_SMARTPA_ERR_BASE_ID +
 					info->err_class);
 	if (obj == NULL) {
@@ -585,6 +594,7 @@ static void smartpa_dft_report_process_abnormal_gain(struct smartpa_msg *msg)
 	logi("sent event to imonitor, ret = %d\n", ret);
 
 	imonitor_destroy_eventobj(obj);
+#endif
 }
 
 static void smartpa_dft_report_process(char *data)
@@ -593,7 +603,9 @@ static void smartpa_dft_report_process(char *data)
 	struct pa_status_str status_str = { {0}, {0}, {0}, {0}, {0}, {0} };
 	struct smartpa_msg *msg = (struct smartpa_msg *)data;
 	struct smartpa_info *info = (struct smartpa_info *)(&(msg->msg_body));
+#ifdef CONFIG_LOG_EXCEPTION
 	struct imonitor_eventobj *obj = NULL;
+#endif
 	struct imedia_dft_report_info *pa_status = NULL;
 
 	if (info->err_code == 0) {
@@ -633,6 +645,7 @@ static void smartpa_dft_report_process(char *data)
 			status_str.rdc, status_str.re, status_str.f0,
 			status_str.tem, status_str.total_gain);/*lint !e747*/ /* unsafe_function_ignore: snprintf */
 
+#ifdef CONFIG_LOG_EXCEPTION
 	obj = imonitor_create_eventobj(SOC_SMARTPA_ERR_BASE_ID +
 					info->err_class);
 
@@ -644,6 +657,7 @@ static void smartpa_dft_report_process(char *data)
 	logi("send event to imonitor, ret = %d\n", ret);
 
 	imonitor_destroy_eventobj(obj);
+#endif
 }
 
 static  void hifi_om_work_smartpa_dft_report(struct work_struct *work)
@@ -709,6 +723,7 @@ static  void hifi_om_voice_bigdata_handler(struct work_struct *work)
 		voice_bigdata_decode(voice_bigdata_miccheck, voice_bigdata, data);
 	}
 
+#ifdef CONFIG_LOG_EXCEPTION
 	if (IMONITOR_UPDATIME < (bigdata_time2.tv_sec - bigdata_time1.tv_sec)) {
 		imedia_voice_bigdata_to_imonitor *voice_bigdata_buff = NULL;
 		char *blockmic = NULL;
@@ -736,8 +751,10 @@ static  void hifi_om_voice_bigdata_handler(struct work_struct *work)
 		bigdata_time1 = current_kernel_time();
 		hifi_ap_count = 0;
 	}
+#endif
 }
 
+#ifdef CONFIG_LOG_EXCEPTION
 /*carry data from kernel to imonitor,for handset mode and handfree mode*/
 static  void voice_bigdata_update_imonitor_inc_blkmic(unsigned int eventID, unsigned short paramid,
 					imedia_voice_bigdata_to_imonitor *voice_bigdata_buff, const char *blockmic)
@@ -865,6 +882,7 @@ static  void voice_bigdata_update_imonitor(unsigned int eventID, unsigned short 
 	imonitor_send_event(voice_bigdata_obj);
 	imonitor_destroy_eventobj(voice_bigdata_obj);
 }
+#endif
 
 static  void voice_bigdata_blockmic (char array[2][20], unsigned char device, unsigned char data)
 {

@@ -4,5 +4,6 @@
 
 config USE_BOOTFAIL_RECOVERY_SOLUTION
         bool "Enable boot fail recovery subsystem"
+	depends on HUAWEI_BFM
         default n
 

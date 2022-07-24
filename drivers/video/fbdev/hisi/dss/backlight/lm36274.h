@@ -221,9 +221,11 @@ struct lm36274_check_flag {
 };
 
 static struct lm36274_check_flag err_table[] = {
+#if defined(CONFIG_HUAWEI_DSM)
 	{OVP_FAULT_FLAG, DSM_LCD_OVP_ERROR_NO},
 	{OCP_FAULT_FLAG, DSM_LCD_BACKLIGHT_OCP_ERROR_NO},
 	{TSD_FAULT_FLAG, DSM_LCD_BACKLIGHT_TSD_ERROR_NO},
+#endif
 };
 
 /* bl_mode_config reg */

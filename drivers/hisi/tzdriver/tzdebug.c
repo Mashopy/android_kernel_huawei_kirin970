@@ -24,7 +24,9 @@
 #include "teek_client_constants.h"
 #include "mailbox_mempool.h"
 #include "dynamic_mem.h"
+#ifdef CONFIG_TEELOG
 #include "tlogger.h"
+#endif
 #include "cmdmonitor.h"
 #include "teek_client_api.h"
 
@@ -39,6 +41,8 @@ struct opt_ops {
 static DEFINE_MUTEX(g_meminfo_lock);
 static struct tee_mem g_tee_meminfo = {0};
 static int send_dump_mem(int flag, struct tee_mem *statmem);
+
+#ifdef CONFIG_TEELOG
 static void tzmemdump(const char *param);
 
 void tee_dump_mem(void)
@@ -47,6 +51,7 @@ void tee_dump_mem(void)
 	if (tlogger_store_lastmsg() < 0)
 		tloge("[cmd_monitor_tick]tlogger_store_lastmsg failed\n");
 }
+#endif
 
 /* get meminfo (tee_mem + N * ta_mem < 4Kbyte) from tee */
 static int get_tee_meminfo_cmd(void)
@@ -131,7 +136,9 @@ static int send_dump_mem(int flag, struct tee_mem *statmem)
 	ret = tc_ns_smc(&smc_cmd);
 	if (ret)
 		tloge("send_dump_mem failed.\n");
+#ifdef CONFIG_TEELOG
 	tz_log_write();
+#endif
 	mailbox_free(mb_pack);
 	return ret;
 }
@@ -149,6 +156,7 @@ static void tzdump(const char *param)
 	wakeup_tc_siq();
 }
 
+#ifdef CONFIG_TEELOG
 static void tzmemdump(const char *param)
 {
 	struct tee_mem *mem = NULL;
@@ -163,6 +171,7 @@ static void tzmemdump(const char *param)
 	(void)send_dump_mem(1, mem);
 	mailbox_free(mem);
 }
+#endif
 
 static void tzmemstat(const char *param)
 {
@@ -192,11 +201,13 @@ static void tzmemstat(const char *param)
 	mailbox_free(meminfo);
 }
 
+#ifdef CONFIG_TEELOG
 static void tzlogwrite(const char *param)
 {
 	(void)param;
 	(void)tz_log_write();
 }
+#endif
 
 static void tzhelp(const char *param);
 
@@ -204,8 +215,10 @@ static struct opt_ops optArr[] = {
 	{"help", tzhelp},
 	{"archivelog", archivelog},
 	{"dump", tzdump},
+#ifdef CONFIG_TEELOG
 	{"memdump", tzmemdump},
 	{"logwrite", tzlogwrite},
+#endif
 	{"dump_service", dump_services_status},
 	{"memstat", tzmemstat},
 };

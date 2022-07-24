@@ -94,6 +94,7 @@ static void dump_tasks(bool verbose)
 static void lowmem_dump(struct work_struct *work)
 {
 	bool verbose = false;
+#ifdef CONFIG_LOG_EXCEPTION
 	int logusertype = get_logusertype_flag();
 
 	/*
@@ -103,6 +104,7 @@ static void lowmem_dump(struct work_struct *work)
 		verbose = true;
 	else
 		verbose = (work == &lowmem_dbg_verbose_wk) ? true : false;
+#endif
 
 	mutex_lock(&lowmem_dump_mutex);
 	show_mem(SHOW_MEM_FILTER_NODES, NULL);

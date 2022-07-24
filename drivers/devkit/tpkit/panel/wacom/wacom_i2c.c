@@ -2113,7 +2113,9 @@ static int wacom_irq_bottom_half(struct ts_cmd_node *in_cmd, struct ts_cmd_node 
 	retval = g_ts_kit_platform_data.bops->bus_read(&reg_addr, INVALID_REG_LENGTH, data, WACOM_TOUCH_INPUTSIZE);
 	if(retval != NO_ERR) {
 		TS_LOG_ERR("%s, I2C read fail, return value is %d\n", __func__, retval);
+#if defined (CONFIG_HUAWEI_DSM)
 		ts_dmd_report(DSM_TP_I2C_RW_ERROR_NO, "wrong reportid.\n");
+#endif
 		return -EINVAL;
 	}
 
@@ -2124,7 +2126,9 @@ static int wacom_irq_bottom_half(struct ts_cmd_node *in_cmd, struct ts_cmd_node 
 		wacom_report_tp_data(wac_data, data, out_cmd);
 	} else {
 		TS_LOG_ERR("wrong reportid %d\n", data[HID_REPORTID_BYTE_OFFSET]);
+#if defined (CONFIG_HUAWEI_DSM)
 		ts_dmd_report(DSM_TP_ABNORMAL_DONT_AFFECT_USE_NO, "wrong reportid.\n");
+#endif
 		return -EINVAL;
 	}
 

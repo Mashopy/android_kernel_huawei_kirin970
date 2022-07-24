@@ -21,7 +21,9 @@
 #endif
 
 #include "LLT_wifi.h"
+#ifdef CONFIG_LOG_EXCEPTION
 #include <log/log_usertype.h>
+#endif
 
 #ifdef CONFIG_HUAWEI_DUBAI
 #include <chipset_common/dubai/dubai.h>
@@ -1014,12 +1016,12 @@ void hw_counters_hex_dump(wl_cnt_t *counters) {
 #endif
 
 uint is_beta_user(void) {
-//#if defined(HW_WIFI_USER_TYPE) && defined(CONFIG_PROC_LOGUSERTYPE)
+#ifdef CONFIG_LOG_EXCEPTION
     unsigned int type = get_logusertype_flag();
     if (type == BETA_USER || type == OVERSEA_USER) {
         return 1;
     }
-//#endif
+#endif
     return 0;
 }
 

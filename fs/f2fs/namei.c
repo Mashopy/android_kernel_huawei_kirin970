@@ -546,12 +546,14 @@ static int monitor_acm(struct inode *dir, struct dentry *dentry,
 	uid_t uid;
 	int file_type;
 	int err = 0;
+#ifdef CONFIG_LOG_EXCEPTION
 	int logusertype = get_logusertype_flag();
 
 	/* oversea users do not need monitor */
 	if (logusertype == OVERSEA_USER ||
 	    logusertype == OVERSEA_COMMERCIAL_USER)
 		goto monitor_ret;
+#endif
 
 	file_type = should_monitor_file(dir, dentry, dir2, dentry2, &op);
 	if (file_type == 0)

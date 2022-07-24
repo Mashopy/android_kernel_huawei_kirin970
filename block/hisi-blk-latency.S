@@ -1983,18 +1983,6 @@ hisi_blk_latency_check_timer_expire:    // @hisi_blk_latency_check_timer_expire
 	blr	x8
 .Ltmp241:
 .LBB6_8:
-	//DEBUG_VALUE: hisi_blk_latency_check_timer_expire:lld <- $x22
-	//DEBUG_VALUE: hisi_blk_latency_check_timer_expire:q <- $x21
-	//DEBUG_VALUE: hisi_blk_latency_check_timer_expire:flags <- $x20
-	//DEBUG_VALUE: hisi_blk_latency_check_timer_expire:data <- $x19
-	//DEBUG_VALUE: hisi_blk_latency_check_timer_expire:bio <- $x19
-	.loc	5 289 17                // /mnt/disk/jenkins/workspace/release/opensource/component_code/vendor/huawei/extra/build/build_script/kirin_kernel_release/kernel/block/hisi-blk-latency.c:289:17
-	ldp	w0, w1, [x19, #112]
-	.loc	5 288 2                 // /mnt/disk/jenkins/workspace/release/opensource/component_code/vendor/huawei/extra/build/build_script/kirin_kernel_release/kernel/block/hisi-blk-latency.c:288:2
-	adrp	x2, .L.str.21
-	add	x2, x2, :lo12:.L.str.21
-	bl	iowp_report
-	b	.LBB6_10
 .Ltmp242:
 .LBB6_9:
 	//DEBUG_VALUE: hisi_blk_latency_check_timer_expire:flags <- $x20
@@ -4852,11 +4840,6 @@ hisi_blk_latency_init:                  // @hisi_blk_latency_init
 	adrp	x8, latency_warning_total
 	str	wzr, [x8, :lo12:latency_warning_total]
 .Ltmp554:
-	.loc	5 518 2                 // /mnt/disk/jenkins/workspace/release/opensource/component_code/vendor/huawei/extra/build/build_script/kirin_kernel_release/kernel/block/hisi-blk-latency.c:518:2
-	bl	iowp_workqueue_init
-	.loc	5 520 1                 // /mnt/disk/jenkins/workspace/release/opensource/component_code/vendor/huawei/extra/build/build_script/kirin_kernel_release/kernel/block/hisi-blk-latency.c:520:1
-	ldp	x29, x30, [sp], #16     // 16-byte Folded Reload
-	ret
 .Ltmp555:
 .Lfunc_end15:
 	.size	hisi_blk_latency_init, .Lfunc_end15-hisi_blk_latency_init

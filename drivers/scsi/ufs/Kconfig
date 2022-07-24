@@ -303,7 +303,7 @@ config SCSI_UFS_BLOCK_TEST
 
 config HUAWEI_UFS_DSM
        bool "Listen UFS Kernel Error"
-       depends on SCSI_UFSHCD
+       depends on HUAWEI_DSM != n && SCSI_UFSHCD
 
 config SCSI_UFS_HI1861_VCMD
 	bool "UFS Hi1861 Device Vendor Command"

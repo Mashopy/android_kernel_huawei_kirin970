@@ -337,7 +337,11 @@ static int hisi_powerkey_probe(struct spmi_device *pdev)
 	hisi_powerkey_register_notifier(&hisi_test_powerkey_nb);
 #endif
 
+#if defined(CONFIG_HUAWEI_DSM)
 	sema_init(&long_presspowerkey_happen_sem, POWER_KEY_CNT);
+#else
+	sema_init(&long_presspowerkey_happen_sem, 0);
+#endif
 
 	if (!kthread_run(long_presspowerkey_happen, NULL, "long_powerkey"))
 		pr_err("create thread long_presspowerkey_happen faild.\n");

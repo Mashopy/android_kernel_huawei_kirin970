@@ -1412,6 +1412,7 @@ static int sensor_need_reset_power(pkt_dmd_log_report_req_t* pkt)
 
     get_monotonic_boottime(&ts);
 
+#ifdef CONFIG_HUAWEI_DSM
     if ((pkt->dmd_id == DSM_SHB_ERR_MCU_ALS ) && (pkt->dmd_case == DMD_CASE_ALS_NEED_RESET_POWER ))
     {
         pkt->hd.tag = TAG_ALS;
@@ -1450,6 +1451,7 @@ static int sensor_need_reset_power(pkt_dmd_log_report_req_t* pkt)
             hwlog_err("ps abnormal exceed reset limit\n");
         }
     }
+#endif
 
 OUT:
      return ret;
@@ -1629,6 +1631,7 @@ static void process_step_counter_report(const pkt_header_t* head)
 	report_sensor_event(head->tag, (int*)(&((pkt_step_counter_data_req_t*) head)->step_count), head->length);
 }
 
+#ifdef CONFIG_LOG_EXCEPTION
 static int process_drop_report(const pkt_drop_data_req_t* head)
 {
 	struct imonitor_eventobj* obj = NULL;
@@ -1675,6 +1678,7 @@ static int process_drop_report(const pkt_drop_data_req_t* head)
 	imonitor_destroy_eventobj(obj);
 	return ret;
 }
+#endif
 
 static int process_sensors_report(const pkt_header_t* head)
 {
@@ -1728,8 +1732,10 @@ static int process_sensors_report(const pkt_header_t* head)
 				sensor_event->xyz[0].x,sensor_event->xyz[0].y,sensor_event->xyz[0].z);
 			break;
 		case TAG_DROP:
+#ifdef CONFIG_LOG_EXCEPTION
 			process_drop_report(head);
 			break;
+#endif
 		default:
 			break;
 	}

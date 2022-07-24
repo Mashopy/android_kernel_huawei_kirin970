@@ -70,14 +70,14 @@ config HISI_MMC_MANUAL_BKOPS
 
 config HUAWEI_SDCARD_DSM
 	bool "Listen sdcard kernel err"
-	depends on MMC != n
+	depends on HUAWEI_DSM != n && MMC != n
 	default n
 	help
 	   use huawei sdcard log radar
 
 config HUAWEI_EMMC_DSM
 	bool "Listen eMMC kernel err"
-	depends on MMC != n
+	depends on HUAWEI_DSM != n && MMC != n
 	default n
 	help
 	   use huawei emmc log radar

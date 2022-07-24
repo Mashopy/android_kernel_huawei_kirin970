@@ -68,7 +68,9 @@ void FUSB3601_handle_attached_sink_event(void)
 	}
 	if (change_counter >= change_counter_threshold) {
 		pr_err("%s change_counter hit\n",__func__);
+#ifdef CONFIG_HUAWEI_DSM
 		superswitch_dsm_report(ERROR_SUPERSWITCH_INT_STORM);
+#endif
 		FUSB3601_dump_register();
 	}
 
@@ -125,7 +127,9 @@ void FUSB3601_platform_notify_cc_orientation(CCOrientation orientation)
 					if (first_in) {
 						first_in = 0;
 					} else {
+#ifdef CONFIG_HUAWEI_DSM
 						superswitch_dsm_report(ERROR_SUPERSWITCH_ABNORMAL_PLUG);
+#endif
 						FUSB3601_dump_register();
 					}
 				} else {

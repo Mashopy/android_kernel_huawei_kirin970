@@ -454,6 +454,7 @@ static int fingerprint_get_module_name(struct fp_data *fp,
 	return ret;
 }
 
+#if defined(CONFIG_HUAWEI_DSM)
 static char *fingerprint_get_sensor_name(unsigned int sensor_id)
 {
 	unsigned int i;
@@ -469,7 +470,6 @@ static char *fingerprint_get_sensor_name(unsigned int sensor_id)
 	return NULL;
 }
 
-#if defined(CONFIG_HUAWEI_DSM)
 static void fingerprint_update_vendor_info(struct fp_data *fp)
 {
 	int ret;
@@ -507,7 +507,6 @@ static void fingerprint_update_vendor_info(struct fp_data *fp)
 	}
 	mutex_unlock(&ic_name_lock);
 }
-#endif
 
 static ssize_t chip_info_show(struct device *device,
 	unsigned int sensor_type, char *chip_info)
@@ -582,10 +581,13 @@ static DEVICE_ATTR(fingerprint_chip_info, 0440,
 	fingerprint_chip_info_show, NULL);
 static DEVICE_ATTR(ud_fingerprint_chip_info, 0440,
 	ud_fingerprint_chip_info_show, NULL);
+#endif
 
 static struct attribute *attributes[] = {
 	&dev_attr_irq.attr,
+#if defined(CONFIG_HUAWEI_DSM)
 	&dev_attr_fingerprint_chip_info.attr,
+#endif
 	&dev_attr_result.attr,
 	&dev_attr_read_image_flag.attr,
 	&dev_attr_test_power_en.attr,
@@ -594,7 +596,9 @@ static struct attribute *attributes[] = {
 	&dev_attr_irq_enabled.attr,
 	&dev_attr_module_id_ud.attr,
 	&dev_attr_low_temperature.attr,
+#if defined(CONFIG_HUAWEI_DSM)
 	&dev_attr_ud_fingerprint_chip_info.attr,
+#endif
 	NULL
 };
 

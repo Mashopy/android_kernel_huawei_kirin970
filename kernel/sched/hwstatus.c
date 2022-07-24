@@ -422,8 +422,10 @@ static inline bool is_beta_user(void)
 {
 	static unsigned int user_type;
 
+#ifdef CONFIG_LOG_EXCEPTION
 	if (user_type == 0)
 		user_type = get_logusertype_flag();
+#endif
 
 	return user_type == BETA_USER;
 }

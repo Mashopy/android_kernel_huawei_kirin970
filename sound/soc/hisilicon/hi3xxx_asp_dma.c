@@ -42,8 +42,10 @@
 #include "asp_dma.h"
 #include "hisi_pcm_hifi.h"
 #include "hifi_lpp.h"
+#ifdef CONFIG_LOG_EXCEPTION
 #include "huawei_platform/log/imonitor.h"
 #include "huawei_platform/log/imonitor_keys.h"
+#endif
 
 /*lint -e749 -e64 -e647 -e429*/
 
@@ -56,6 +58,7 @@
 
 #undef CONFIG_PM_RUNTIME
 
+#ifdef CONFIG_LOG_EXCEPTION
 #define MONITOR_DMA_EXCEPTION
 #ifdef MONITOR_DMA_EXCEPTION
 	struct workqueue_struct *dma_exception_workqueue = NULL;
@@ -64,6 +67,7 @@
 	static unsigned int dmaPeriodErrCount = 0;
 	static unsigned int dmaPeriodIntervalMs = 0;
 	static bool triggerSendEvent = false;
+#endif
 #endif
 
 #define HI3XXX_PCM_DMA_BUF_DOWN_SIZE         (PCM_DMA_BUF_PLAYBACK_LEN - 1024) // 75k for low latency playback

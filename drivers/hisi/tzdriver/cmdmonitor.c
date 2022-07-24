@@ -308,8 +308,10 @@ static void cmd_monitor_tickfn(struct work_struct *work)
 {
 	(void)(work);
 	cmd_monitor_tick();
+#ifdef CONFIG_TEELOG
 	/* check tlogcat if have new log  */
 	tz_log_write();
+#endif
 }
 static void cmd_monitor_archivefn(struct work_struct *work)
 {
