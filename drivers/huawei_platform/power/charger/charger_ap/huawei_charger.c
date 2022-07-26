@@ -95,6 +95,7 @@ HWLOG_REGIST();
 BLOCKING_NOTIFIER_HEAD(charge_wake_unlock_list);
 /*lint -restore*/
 
+#define CHG_WAIT_PD_TIME 6
 static struct wake_lock charge_lock;
 static struct wake_lock otg_lock;
 static struct wake_lock stop_charge_lock;
@@ -132,6 +133,9 @@ static bool try_pd_to_scp;
 static int try_pd_to_scp_counter;
 #define PD_TO_SCP_MAX_COUNT 5
 #endif
+static time64_t boot_time;
+static bool chg_wait_pd_init;
+
 #define REG_NUM 21
 struct hisi_charger_bootloader_info {
 	bool info_vaild;
@@ -1932,6 +1936,9 @@ static void fcp_charge_check(struct charge_device_info *di)
 {
 	int ret = 0, i = 0;
 	bool cc_vbus_short = false;
+
+	if (chg_wait_pd_init)
+		return;
 
 	if (cancel_work_flag) {
 		hwlog_info("[%s] charge already stop\n", __func__);
@@ -3739,10 +3746,21 @@ static void charge_monitor_work(struct work_struct *work)
 {
 	struct charge_device_info *di =
 	    container_of(work, struct charge_device_info, charge_work.work);
+	struct timespec64 ts = { 0 };
+
+	if (chg_wait_pd_init) {
+		get_monotonic_boottime64(&ts);
+		hwlog_info("tv_sec:%ld,boot_time:%ld\n",
+			(long)ts.tv_sec, (long)boot_time);
+		/* wait a moment for PD init and detect PD adaptor */
+		if (ts.tv_sec - boot_time > CHG_WAIT_PD_TIME)
+			chg_wait_pd_init = false;
+	}
 	charge_kick_watchdog(di);
 
 #ifdef CONFIG_DIRECT_CHARGER
 	if (try_pd_to_scp && (try_pd_to_scp_counter > 0)) {
+		chg_wait_pd_init = false;
 		hwlog_info("%s try_pd_to_scp\n", __func__);
 		if (!cancel_work_flag) {
 			if (!direct_charge_pre_check()) {
@@ -3786,7 +3804,8 @@ static void charge_monitor_work(struct work_struct *work)
 #endif
 		}
 #ifdef CONFIG_DIRECT_CHARGER
-		if (di->charger_type == CHARGER_TYPE_STANDARD) {
+		if (di->charger_type == CHARGER_TYPE_STANDARD &&
+			!chg_wait_pd_init) {
 			if (!cancel_work_flag)
 				direct_charge_check();
 			else
@@ -3823,6 +3842,9 @@ static void charge_monitor_work(struct work_struct *work)
 	 if (try_pd_to_scp_counter > 0)
 		schedule_delayed_work(&di->charge_work,
 			msecs_to_jiffies(CHARGING_WORK_PDTOSCP_TIMEOUT));
+	else if (chg_wait_pd_init)
+		schedule_delayed_work(&di->charge_work,
+			msecs_to_jiffies(CHARGING_WORK_WAITPD_TIMEOUT));
 	else
 		schedule_delayed_work(&di->charge_work,
 			msecs_to_jiffies(CHARGING_WORK_TIMEOUT));
@@ -5591,6 +5613,8 @@ static int charge_probe(struct platform_device *pdev)
         struct pd_dpm_vbus_state local_state;
 #endif
         int pmic_vbus_irq_enabled = 1;
+	struct timespec64 ts = { 0 };
+
 	di = charge_device_info_alloc();
 	if(!di) {
 		hwlog_err("alloc di failed\n");
@@ -5757,6 +5781,9 @@ static int charge_probe(struct platform_device *pdev)
 	di->charge_fault = CHARGE_FAULT_NON;
 	di->check_full_count = 0;
 	di->weaksource_cnt = 0;
+	chg_wait_pd_init = true;
+	get_monotonic_boottime64(&ts);
+	boot_time = ts.tv_sec;
 	g_di = di;
 #ifdef CONFIG_TCPC_CLASS
         pmic_vbus_irq_enabled = pmic_vbus_irq_is_enabled();
